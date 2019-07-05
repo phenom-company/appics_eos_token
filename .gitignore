@@ -1,0 +1,5 @@
+*.gch.tmp
+.tern-port
+*.abi
+*.wasm
+
