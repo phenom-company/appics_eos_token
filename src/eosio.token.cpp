@@ -26,7 +26,8 @@ void token::create( name   issuer,
     });
 }
 
-// Wrapper for issue action, that receive steem transcation id, for history reasons
+// Wrapper for issue action, that receives Steem transcation id to show that
+// all issued tokens are backed by APX token in Steem gateway account
 void token::mint( name to, asset quantity, string steem_tx, string memo )
 {
    (void)steem_tx;
@@ -117,8 +118,8 @@ void token::transfer( name    from,
     auto payer = has_auth( to ) ? to : from;
 
     if ( to == _self ) {
-       // It is assumed that the tokens are transfering to STEEM
-       // then just burn tokens
+       // If tokens are transferred to the contract account,
+       // they are automatically burned and swapped to Steem account specified in memo.
 
        sub_balance( from, quantity );
        statstable.modify( st, same_payer, [&]( auto& s ) {
