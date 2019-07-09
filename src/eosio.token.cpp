@@ -32,12 +32,14 @@ void token::mint( name to, asset quantity, string steem_tx, string memo )
 {
    (void)steem_tx;
 
-   action(
-     permission_level{_self, "active"_n},
-     _self,
-     "issue"_n,
-     std::make_tuple(to, quantity, memo)
-   ).send();
+   auto sym = quantity.symbol;
+   stats statstable( _self, sym.code().raw() );
+
+   auto st = statstable.get( sym.code().raw(), "token with symbol does not exist, create token before mint" );
+
+   SEND_INLINE_ACTION( *this, issue, { {st.issuer, "active"_n} },
+                       { to, quantity, memo }
+   );
 }
 
 void token::issue( name to, asset quantity, string memo )
